@@ -712,3 +712,31 @@ class OutsTestCase(unittest.TestCase):
         self.assertTrue(list(p.as_dict()['outs'].keys()) == ['plate'])
         self.assertTrue(list(list(p.as_dict()['outs'].values())[0].keys()) == ['0'])
         self.assertTrue(list(p.as_dict()['outs'].values())[0]['0'] == {'name': 'test_well'})
+
+class CoverStatusTestCase(unittest.TestCase):
+    def test_ref_cover_status(self):
+        p = Protocol()
+        cont = p.ref("cont", None, "96-pcr", discard=True, cover="seal")
+        self.assertTrue(cont.cover)
+        self.assertTrue(cont.cover == "seal")
+        self.assertTrue(p.refs[cont.name].opts['cover'])
+
+    def test_implicit_unseal(self):
+        p = Protocol()
+        cont = p.ref("cont", None, "96-pcr", discard=True)
+        self.assertFalse(cont.cover)
+        p.seal(cont)
+        self.assertTrue(cont.cover)
+        self.assertTrue(cont.cover == "seal")
+        p.mix(cont.well(0))
+        self.assertFalse(cont.cover)
+
+    def test_implicit_uncover(self):
+        p = Protocol()
+        cont = p.ref("cont", None, "96-flat", discard=True)
+        self.assertFalse(cont.cover)
+        p.cover(cont, "universal")
+        self.assertTrue(cont.cover)
+        self.assertTrue(cont.cover == "cover")
+        p.mix(cont.well(0))
+        self.assertFalse(cont.cover)
