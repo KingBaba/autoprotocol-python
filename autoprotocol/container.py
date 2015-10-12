@@ -14,6 +14,9 @@ if sys.version_info[0] >= 3:
 
 '''
 
+SEAL_TYPES = ["ultra-clear", "foil"]
+COVER_TYPES = ["standard", "low_evaporation", "universal"]
+
 
 class Well(object):
     """
@@ -459,7 +462,7 @@ class Container(object):
         Check if Container is sealed.
 
         """
-        if self.cover == "seal":
+        if self.cover in SEAL_TYPES:
             return True
         return False
 
@@ -468,7 +471,7 @@ class Container(object):
         Check if Container is covered.
 
         """
-        if self.cover == "cover":
+        if self.cover in COVER_TYPES:
             return True
         return False
 
